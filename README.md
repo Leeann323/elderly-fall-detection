@@ -131,16 +131,60 @@ NORMAL - S=0.12 hh=3.41 hip=2.05 neck=12 v=0.08
 
 ---
 
+## 手机端远程告警 App（Android）
+
+配套 App：**`跌倒告警`（com.leeann323.fallalert）**，安装包见 [Releases](https://github.com/Leeann323/elderly-fall-detection/releases)。
+
+解决的问题：**子女在外地，手机和家里的电脑不在同一个网络，怎么第一时间收到告警？** 摄像头那台电脑在 NAT 后面没有公网 IP，手机直连它不可能。本方案用公共发布-订阅中转（ntfy.sh，纯 HTTPS 443）打通：
+
+```mermaid
+flowchart LR
+    A["电脑 · elderly_fall_monitor.py<br/>判决确认后 Pusher._ntfy()"] -->|"HTTPS POST<br/>JSON: kind/area/score/eid"| B["ntfy.sh<br/>topic: ltc-fall-xxxxxxxx"]
+    B -->|"HTTPS 轮询 8s<br/>/topic/json?poll=1&since=id"| C["手机 · 前台服务轮询"]
+    C --> D["通知渠道 IMPORTANCE_HIGH<br/>闹钟音 + 震动"]
+    C --> E["全屏红屏告警页<br/>锁屏点亮 · 一键已处理"]
+```
+
+- **零第三方依赖**：不用 AndroidX / Firebase / FCM / GMS，国产无 Google 服务框架的 ROM 也能用；APK 约 30 KB。
+- **两种通知形态**：普通通知（带事件编号、区域、置信度）+ 全屏告警页（锁屏也能亮屏弹出），适合夜间。
+- **断网自愈**：游标 `since=<lastId>` 持久化，App 被杀重启不漏消息、不重复报。
+- **开机自启**：上次处于监听状态则重启后自动继续。
+- **告警分级**：`A/B/C/S` 四类与电脑端 `KIND_NAME` 完全对齐，久蹲软提醒也会推。
+
+配置只有两步：
+
+```bash
+# 1) 电脑端：填 topic（建议用环境变量，别提交进仓库）
+set NTFY_TOPIC=ltc-fall-k7m2xq9p
+python elderly_fall_monitor.py
+
+# 2) 手机端：App 里填同一个 topic → 启动监听 → 发送测试告警自检
+```
+
+钉钉 webhook 与手机推送可同时启用。详细安装、排查、安全说明见 **[docs/android-app.md](docs/android-app.md)**。
+
+> ⚠️ ntfy.sh 是公共服务，消息在第三方最多缓存 12 小时且默认明文可见，所以**只推"类型/区域/置信度"这类元数据，绝不推视频帧或骨架图**。topic 即密钥，请用随机串。
+
+---
+
 ## 目录结构
 
 ```
 elderly-fall-detection/
-├── elderly_fall_monitor.py    # 主程序（单文件，无第三方业务依赖）
+├── elderly_fall_monitor.py    # 主程序（单文件：检测 + 判决 + 推送）
 ├── requirements.txt
+├── android-app/               # 手机端 APK 源码（纯 Java，无 Gradle）
+│   ├── AndroidManifest.xml
+│   ├── src/com/leeann323/fallalert/
+│   ├── res/
+│   ├── build.ps1              # aapt2 + javac + d8 + apksigner 一键打包
+│   └── dist/FallAlert-1.0.apk # 构建产物（已 gitignore，见 Releases）
 ├── docs/
-│   └── algorithm.md           # 三通道判决、标定、失效场景与调参详解
+│   ├── algorithm.md           # 三通道判决、标定、失效场景与调参详解
+│   └── android-app.md         # 手机端安装、配置、排查、安全说明
 ├── alerts/                    # 运行时生成：骨架图（已 gitignore）
-├── LICENSE
+├── LICENSE / NOTICE           # Apache-2.0 + 署名要求
+├── CITATION.cff               # 学术引用（GitHub “Cite this repository”）
 └── README.md
 ```
 

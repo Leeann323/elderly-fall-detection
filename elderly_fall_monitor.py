@@ -19,6 +19,7 @@ Elderly Fall Detection & Alert System via Skeleton Pose Estimation
 
  # -*- coding: utf-8 -*-
 import collections
+import json
 import math
 import os
 import queue
@@ -39,6 +40,12 @@ AREA = "客厅"                    # 监测区域：客厅 / 卧室 / 卫生间 
 DINGTALK_WEBHOOK = ""            # 钉钉或企业微信机器人地址，留空则只本地打印
 ALERT_DIR = "alerts"             # 骨架图落盘目录（可在清理策略中定期删除）
 PUBLIC_IMAGE_BASE = ""           # 若填 'http://<局域网IP>:8000/alerts'，告警中内嵌图片链接
+
+# --- 手机远程告警（跨网络：电脑与手机不必在同一 Wi-Fi） ---
+# 手机 App「跌倒告警」里填写同一个 Topic，即可在任意网络下收到推送。
+# 也可用环境变量：set NTFY_TOPIC=xxx
+NTFY_SERVER = os.environ.get("NTFY_SERVER", "https://ntfy.sh")
+NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "")   # 留空 = 不启用手机推送
 
 # --- 姿态与判决阈值（均以 L_ref = 肩中—髋中 距离为单位） ---
 HH_GROUND = 1.3                  # 贴地门限：头离地比低于此值才算倒地
@@ -288,6 +295,8 @@ class Pusher:
                     % (name, area, eid, area,
                        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                        hold, score, self._image_ref(image_path)))
+        threading.Thread(target=self._ntfy, args=(kind, hold, score, area, eid),
+                         daemon=True).start()
         try:
             self.q.put_nowait(text)
         except queue.Full:
@@ -300,6 +309,32 @@ class Pusher:
         if PUBLIC_IMAGE_BASE:
             return "![骨架](%s/%s)" % (PUBLIC_IMAGE_BASE.rstrip("/"), os.path.basename(path))
         return "已保存至本机 %s" % path
+
+    def _ntfy(self, kind, hold, score, area, eid):
+        """推送到 ntfy 公网中转：手机 App 轮询同一个 topic，跨网络也能立刻收到告警。
+
+        放在独立线程里执行，网络慢不会拖住视频主循环。
+        """
+        if not NTFY_TOPIC:
+            return
+        payload = {
+            "kind": kind,                       # A / B / C / S
+            "kind_name": KIND_NAME.get(kind, "异常"),
+            "area": area,
+            "eid": eid,
+            "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "hold": round(float(hold), 1),
+            "score": round(float(score), 2),
+        }
+        url = "%s/%s" % (NTFY_SERVER.rstrip("/"), NTFY_TOPIC.strip())
+        try:
+            requests.post(url,
+                          data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
+                          headers={"User-Agent": "FallAlert-PC/1.0",
+                                   "Content-Type": "application/json; charset=utf-8"},
+                          timeout=5)
+        except Exception as exc:
+            print("[warn] ntfy 推送失败：%s" % exc)
 
     def _run(self):
         while True:

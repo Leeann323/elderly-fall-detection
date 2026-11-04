@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">跌倒告警</string>
+    <string name="hint_server">中转服务地址（默认 https://ntfy.sh）</string>
+    <string name="hint_topic">频道 Topic（电脑端与手机必须完全一致）</string>
+    <string name="btn_start">启动监听</string>
+    <string name="btn_stop">停止</string>
+    <string name="btn_test">发送测试告警</string>
+    <string name="btn_clear">清空记录</string>
+</resources>
