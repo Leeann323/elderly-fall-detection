@@ -1,0 +1,31 @@
+基于 AI 人体骨架姿态的居家老人无穿戴跌倒监测预警系统
+Elderly Fall Detection & Alert System via Skeleton Pose Estimation
+
+Copyright 2026 Leeann323
+https://github.com/Leeann323/elderly-fall-detection
+
+This product includes software developed by Leeann323
+(https://github.com/Leeann323/elderly-fall-detection).
+
+------------------------------------------------------------------
+署名要求（中英文并列，二者其一即可满足）
+------------------------------------------------------------------
+
+转载、二次分发、fork 后再发布，或将本项目用于商业产品/服务时，请：
+
+1. 保留本 NOTICE 文件与 LICENSE 文件；
+2. 在产品文档、项目 README、论文、演示材料或"关于"页面中，以如下形式署名：
+
+   本项目基于「基于 AI 人体骨架姿态的居家老人无穿戴跌倒监测预警系统」，
+   作者 Leeann323，https://github.com/Leeann323/elderly-fall-detection
+
+   This product uses "Elderly Fall Detection & Alert System via Skeleton
+   Pose Estimation" by Leeann323,
+   https://github.com/Leeann323/elderly-fall-detection
+
+3. 若修改过源码，请在文件或文档中说明修改内容（Apache-2.0 第 4(b) 条）。
+
+------------------------------------------------------------------
+注意：AGPL 式的"必须开源你的修改"不适用于本项目；Apache-2.0 允许闭源商用，
+      但署名与版权声明不可移除。
+------------------------------------------------------------------

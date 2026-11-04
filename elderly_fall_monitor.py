@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2026 Leeann323
+# https://github.com/Leeann323/elderly-fall-detection
 """基于 AI 人体骨架姿态的居家老人无穿戴跌倒监测预警系统
 
 Elderly Fall Detection & Alert System via Skeleton Pose Estimation
@@ -11,7 +14,7 @@ Elderly Fall Detection & Alert System via Skeleton Pose Estimation
 
 运行：python elderly_fall_monitor.py   （按 q 或 Esc 退出）
 依赖：opencv-python, mediapipe, numpy<2, requests
-许可：MIT
+许可：Apache License 2.0（可商用，须署名并保留 NOTICE，见 NOTICE 文件）
 """
 
  # -*- coding: utf-8 -*-

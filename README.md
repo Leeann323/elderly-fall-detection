@@ -4,7 +4,7 @@
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue)](https://www.python.org/)
 [![MediaPipe](https://img.shields.io/badge/MediaPipe-Pose-00A98F)](https://developers.google.com/mediapipe)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue)](LICENSE)
 
 ---
 
@@ -174,10 +174,43 @@ elderly-fall-detection/
 
 ---
 
+## 开源协议与署名
+
+本项目采用 **[Apache License 2.0](LICENSE)**（OSI 认证），全文见 [`LICENSE`](LICENSE)，署名条款见 [`NOTICE`](NOTICE)。
+
+**一句话结论：可以随便转载、可以闭源商用、可以改，但必须保留版权声明 + NOTICE，并在文档里写明出处。**
+
+| 你做的事 | 允许？ | 必须做的事 |
+| --- | --- | --- |
+| 个人学习、本地部署、跑着玩 | ✅ | 无 |
+| 转载到博客 / 公众号 / CSDN / B 站，或 fork 后再发布 | ✅ | 保留 `LICENSE` + `NOTICE`，文中注明作者与仓库地址 |
+| 商业产品、公司内部系统、SaaS 部署 | ✅ | 同上；在产品文档或"关于"页面署名 |
+| 修改源码后闭源发布 | ✅ | 修改过的文件要"显著说明已修改"（第 4(b) 条），并继续保留声明 |
+| 去掉作者名、把项目说成自己写的 | ❌ | —— 这违反第 4 条，也违反著作权法 |
+| 拿作者名义为你的产品背书 | ❌ | —— 第 6 条商标条款不授予此权利 |
+
+### 推荐的署名写法
+
+```
+本项目基于「基于 AI 人体骨架姿态的居家老人无穿戴跌倒监测预警系统」
+作者 Leeann323，https://github.com/Leeann323/elderly-fall-detection
+（Apache License 2.0）
+```
+
+学术引用请用仓库内的 [`CITATION.cff`](CITATION.cff)，GitHub 页面右上角 **"Cite this repository"** 可直接生成 APA / BibTeX：
+
+```bibtex
+@software{Leeann323_elderly_fall_detection_2026,
+  author = {Leeann323},
+  title  = {基于 AI 人体骨架姿态的居家老人无穿戴跌倒监测预警系统},
+  year   = {2026},
+  url    = {https://github.com/Leeann323/elderly-fall-detection},
+  license = {Apache-2.0}
+}
+```
+
+> ⚠️ 一点法律常识：开源协议约束的是**分发行为**。Apache-2.0 的署名义务在"你把代码/二进制交付给别人"时触发；如果只是自己公司内部当 SaaS 用、从不分发，署名义务不会自动触发 —— 但**引用出处仍是学术与行业惯例**，建议照做。若你希望"任何商用都必须署名（含 SaaS）"，那已经超出标准开源协议的范围，需要另写商业许可，可以再找我加一份 `LICENSE-COMMERCIAL.md`。
+
 ## 免责声明
 
 本项目为技术演示与辅助工具，**不构成医疗器械，不能替代专业护理与紧急救援**。阈值需结合具体家庭场景标定，任何"未告警"都不代表老人安全。使用者应自行承担部署与误报/漏报的风险。
-
-## License
-
-[MIT](LICENSE) © Leeann323

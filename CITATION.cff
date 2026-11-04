@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "若本项目对你的研究、论文或产品有帮助，请按以下格式引用。If you use this project, please cite it as below."
+title: "基于 AI 人体骨架姿态的居家老人无穿戴跌倒监测预警系统"
+abstract: >-
+  单目摄像头 + MediaPipe 33 点人体骨架的可解释跌倒监测系统。以"肩中—髋中"
+  距离归一化几何特征，采用三通道判决（冲击型跌倒 / 缓慢滑落型晕倒 / 坐位垂头型晕厥）
+  与 NORMAL-SUSPECT-ALERT 状态机，支持钉钉、企业微信告警推送。
+  隐私设计：原始视频帧不落盘、不上云，告警图片仅含纯黑底骨架连线。
+authors:
+  - name: "Leeann323"
+    website: "https://github.com/Leeann323"
+version: "1.0.0"
+date-released: "2026-11-04"
+license: Apache-2.0
+repository-code: "https://github.com/Leeann323/elderly-fall-detection"
+url: "https://github.com/Leeann323/elderly-fall-detection"
+keywords:
+  - fall detection
+  - elderly care
+  - pose estimation
+  - mediapipe
+  - computer vision
+  - privacy-preserving
+  - 跌倒检测
+  - 居家养老
+type: software
