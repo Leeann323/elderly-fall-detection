@@ -1,25 +1,29 @@
 @echo off
-chcp 65001 >nul
+rem ============================================================
+rem  One-click launcher template
+rem    copy start_monitor.example.bat start_monitor.bat
+rem
+rem  Topic is read from ntfy_topic.txt (single source of truth).
+rem  Put ONE line in ntfy_topic.txt, e.g.:
+rem      ltc-fall-k7m2xq9p
+rem  The same string must be typed into the Android app.
+rem ============================================================
 cd /d "%~dp0"
 
-rem ============================================================
-rem  一键启动模板 —— 复制成 start_monitor.bat 后修改 Topic
-rem      copy start_monitor.example.bat start_monitor.bat
-rem  Topic 请用手机 App 首次启动时自动生成的随机串（形如 ltc-fall-k7m2xq9p）
-rem  这个文件里含“密钥”，不要提交到仓库（已在 .gitignore 中排除 start_monitor.bat）
-rem ============================================================
 set NTFY_SERVER=https://ntfy.sh
-set NTFY_TOPIC=在此填写手机App里的Topic
 set DINGTALK_WEBHOOK=
+set NTFY_TOPIC=
+for /f "usebackq tokens=* eol=#" %%a in ("ntfy_topic.txt") do if not defined NTFY_TOPIC set "NTFY_TOPIC=%%a"
 
-echo.
-echo  [配置] 中转服务 : %NTFY_SERVER%
-echo  [配置] 频道Topic: %NTFY_TOPIC%
+if not defined NTFY_TOPIC echo [warn] no topic in ntfy_topic.txt - the phone will NOT receive alerts
+if defined NTFY_TOPIC echo [cfg] topic  = %NTFY_TOPIC%
+echo [cfg] server = %NTFY_SERVER%
+echo [tip] the Android app must show the same topic while listening
 echo.
 pause
 
 python elderly_fall_monitor.py
 
 echo.
-echo  监测已退出。
+echo monitor exited.
 pause
