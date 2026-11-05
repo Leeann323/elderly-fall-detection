@@ -13,6 +13,7 @@ alerts/
 # --- 本地配置 / 密钥 ---
 .env
 config.local.py
+start_monitor.bat
 *.mp4
 *.avi
 *.mkv
