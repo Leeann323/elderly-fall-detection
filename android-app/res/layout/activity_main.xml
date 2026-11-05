@@ -21,9 +21,19 @@
         android:textColor="#666666" />
 
     <TextView
+        android:id="@+id/tv_effective"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="#B71C1C"
+        android:textIsSelectable="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="中转服务"
         android:textSize="13sp"
         android:textStyle="bold" />
@@ -40,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="频道 Topic"
+        android:text="频道 Topic（必须与电脑端 ntfy_topic.txt 完全一致）"
         android:textSize="13sp"
         android:textStyle="bold" />
 
@@ -49,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/hint_topic"
-        android:inputType="text"
+        android:inputType="textNoSuggestions"
         android:textSize="14sp" />
 
     <TextView
@@ -101,6 +111,12 @@
             android:layout_weight="1"
             android:text="@string/btn_clear" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_diag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_diag" />
 
     <TextView
         android:id="@+id/tv_status"

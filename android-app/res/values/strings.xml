@@ -7,4 +7,5 @@
     <string name="btn_stop">停止</string>
     <string name="btn_test">发送测试告警</string>
     <string name="btn_clear">清空记录</string>
+    <string name="btn_diag">诊断：立即拉取一次并显示结果</string>
 </resources>

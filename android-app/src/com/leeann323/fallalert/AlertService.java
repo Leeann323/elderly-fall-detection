@@ -187,7 +187,7 @@ public class AlertService extends Service {
                 if (lastId != null) P.setLastId(this, lastId);
 
                 interval = C.POLL_MS;
-                setStatus("监听中 · " + now() + " · 本轮 " + count + " 条");
+                setStatus(P.topic(this) + " · " + now() + " · 本轮 " + count + " 条");
                 sleepQuiet(interval);
 
             } catch (Exception ex) {

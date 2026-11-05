@@ -60,6 +60,14 @@ public final class P {
         sp(c).edit().putBoolean(C.K_RUNNING, v).apply();
     }
 
+    public static boolean seenIntro(Context c) {
+        return sp(c).getBoolean("intro_seen", false);
+    }
+
+    public static void setSeenIntro(Context c, boolean v) {
+        sp(c).edit().putBoolean("intro_seen", v).apply();
+    }
+
     public static List<Alert> history(Context c) {
         List<Alert> out = new ArrayList<Alert>();
         try {
