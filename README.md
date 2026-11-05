@@ -154,12 +154,17 @@ flowchart LR
 配置只有两步：
 
 ```bash
-# 1) 电脑端：填 topic（建议用环境变量，别提交进仓库）
-set NTFY_TOPIC=ltc-fall-k7m2xq9p
+# 1) 电脑端：把 topic 写进 ntfy_topic.txt（一行，无引号），脚本会自动读
+#    也可以用环境变量：set NTFY_TOPIC=ltc-fall-k7m2xq9p
 python elderly_fall_monitor.py
+# 启动时会打印：
+#   [info] 手机远程推送：已启用 -> https://ntfy.sh/ltc-fall-k7m2xq9p
+#   若打印“未启用”，说明 topic 没读到，此时告警只会留在本机！
 
 # 2) 手机端：App 里填同一个 topic → 启动监听 → 发送测试告警自检
 ```
+
+> 💡 **踩坑提醒**：只用环境变量的话，在 Spyder 里按 F5、或双击 `.py` 运行时环境变量往往没生效，表现就是"检测到了但手机没反应，只在本机留了图"。所以推荐 `ntfy_topic.txt` 文件方式（已被 `.gitignore` 排除，不会上传）。
 
 钉钉 webhook 与手机推送可同时启用。详细安装、排查、安全说明见 **[docs/android-app.md](docs/android-app.md)**。
 

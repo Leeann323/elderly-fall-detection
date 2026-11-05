@@ -43,9 +43,32 @@ PUBLIC_IMAGE_BASE = ""           # 若填 'http://<局域网IP>:8000/alerts'，�
 
 # --- 手机远程告警（跨网络：电脑与手机不必在同一 Wi-Fi） ---
 # 手机 App「跌倒告警」里填写同一个 Topic，即可在任意网络下收到推送。
-# 也可用环境变量：set NTFY_TOPIC=xxx
+# Topic 读取优先级：环境变量 NTFY_TOPIC  >  同目录 ntfy_topic.txt（推荐，双击/Spyder 都能用）
 NTFY_SERVER = os.environ.get("NTFY_SERVER", "https://ntfy.sh")
-NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "")   # 留空 = 不启用手机推送
+
+
+def _load_ntfy_topic():
+    """读 topic：环境变量优先，其次读脚本同目录的 ntfy_topic.txt。
+
+    文件方式的好处：在 Spyder 里按 F5、或双击 .py 运行时，环境变量往往没生效，
+    而 ntfy_topic.txt 一定读得到，不会再出现"检测到了却只在本地"的情况。
+    """
+    t = os.environ.get("NTFY_TOPIC", "").strip()
+    if t:
+        return t
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ntfy_topic.txt")
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if line and not line.startswith("#"):
+                    return line
+    except OSError:
+        pass
+    return ""
+
+
+NTFY_TOPIC = _load_ntfy_topic()   # 留空 = 不启用手机推送
 
 # --- 姿态与判决阈值（均以 L_ref = 肩中—髋中 距离为单位） ---
 HH_GROUND = 1.3                  # 贴地门限：头离地比低于此值才算倒地
@@ -328,11 +351,15 @@ class Pusher:
         }
         url = "%s/%s" % (NTFY_SERVER.rstrip("/"), NTFY_TOPIC.strip())
         try:
-            requests.post(url,
-                          data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
-                          headers={"User-Agent": "FallAlert-PC/1.0",
-                                   "Content-Type": "application/json; charset=utf-8"},
-                          timeout=5)
+            resp = requests.post(url,
+                                 data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
+                                 headers={"User-Agent": "FallAlert-PC/1.0",
+                                          "Content-Type": "application/json; charset=utf-8"},
+                                 timeout=5)
+            if resp.status_code < 300:
+                print("[info] 已推送手机告警：%s (%s)" % (eid, kind))
+            else:
+                print("[warn] ntfy 拒绝推送：%s %s" % (resp.status_code, resp.text[:120]))
         except Exception as exc:
             print("[warn] ntfy 推送失败：%s" % exc)
 
@@ -407,6 +434,12 @@ def main():
 
     judge = FallJudge()
     pusher = Pusher(DINGTALK_WEBHOOK)
+    if NTFY_TOPIC:
+        print("[info] 手机远程推送：已启用 -> %s/%s"
+              % (NTFY_SERVER.rstrip("/"), NTFY_TOPIC))
+    else:
+        print("[info] 手机远程推送：未启用（在 ntfy_topic.txt 写入 Topic，"
+              "或 set NTFY_TOPIC=...；否则告警只留在本机）")
     hist = collections.deque(maxlen=SMOOTH_N)
     l_ref, calib = None, []
     calib_deadline = None

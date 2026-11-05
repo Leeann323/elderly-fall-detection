@@ -55,16 +55,34 @@
 
 ## 3. 配置（电脑端）
 
-在 `elderly_fall_monitor.py` 顶部填 topic，或直接用环境变量（推荐，避免把 topic 提交进仓库）：
+在电脑端配置 topic，**推荐用文件方式**（在 Spyder 里 F5、双击 .py 都能生效）：
 
 ```bash
-set NTFY_TOPIC=ltc-fall-k7m2xq9p
+copy ntfy_topic.example.txt ntfy_topic.txt
+# 编辑 ntfy_topic.txt，写一行：ltc-fall-k7m2xq9p
 python elderly_fall_monitor.py
 ```
 
-PowerShell：`$env:NTFY_TOPIC="ltc-fall-k7m2xq9p"`；Linux/macOS：`export NTFY_TOPIC=...`
+三种方式优先级：环境变量 `NTFY_TOPIC` > 同目录 `ntfy_topic.txt` > 代码里直接写死。
 
-也可在代码里直接改：
+```bash
+set NTFY_TOPIC=ltc-fall-k7m2xq9p     # cmd
+$env:NTFY_TOPIC="ltc-fall-k7m2xq9p"  # PowerShell
+export NTFY_TOPIC=ltc-fall-k7m2xq9p  # Linux / macOS
+```
+
+启动时会打印一行自检结果，**这是排查的第一步**：
+
+```
+[info] 手机远程推送：已启用 -> https://ntfy.sh/ltc-fall-k7m2xq9p
+[info] 手机远程推送：未启用（在 ntfy_topic.txt 写入 Topic，或 set NTFY_TOPIC=...；否则告警只留在本机）
+```
+
+每次推送成功也会打印 `[info] 已推送手机告警：F20261105-1730-002 (B)`；失败打印 `[warn] ntfy 推送失败/拒绝`。
+
+> ⚠️ 常见事故：在 Spyder 里按 F5 运行，环境变量不生效 → `NTFY_TOPIC` 为空 → `_ntfy()` 直接 return → 手机永远收不到，只在本地存了骨架图。用 `ntfy_topic.txt` 可以彻底避免。
+
+也可在代码里直接改（不推荐，容易误提交）：
 
 ```python
 NTFY_SERVER = "https://ntfy.sh"     # 换自建服务就改这里

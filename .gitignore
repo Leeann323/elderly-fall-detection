@@ -14,6 +14,7 @@ alerts/
 .env
 config.local.py
 start_monitor.bat
+ntfy_topic.txt
 *.mp4
 *.avi
 *.mkv

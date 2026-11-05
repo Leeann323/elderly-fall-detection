@@ -16,7 +16,28 @@ import requests
 from datetime import datetime
 
 SERVER = os.environ.get("NTFY_SERVER", "https://ntfy.sh")
-topic = sys.argv[1].strip() if len(sys.argv) > 1 else os.environ.get("NTFY_TOPIC", "").strip()
+
+
+def load_topic():
+    """优先级：命令行参数 > 环境变量 > 同目录 ntfy_topic.txt"""
+    if len(sys.argv) > 1 and sys.argv[1].strip():
+        return sys.argv[1].strip()
+    t = os.environ.get("NTFY_TOPIC", "").strip()
+    if t:
+        return t
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ntfy_topic.txt")
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if line and not line.startswith("#"):
+                    return line
+    except OSError:
+        pass
+    return ""
+
+
+topic = load_topic()
 
 if not topic:
     raise SystemExit("请提供 topic：python test_alert.py <topic>   （或先 set NTFY_TOPIC=...）")
