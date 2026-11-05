@@ -44,12 +44,18 @@ public final class P {
         sp(c).edit().putString(C.K_TOPIC, v == null ? "" : v.trim()).apply();
     }
 
+    /** 游标按 topic 隔离：换 topic 后不会沿用别的频道留下的 id（否则会永远拉不到新消息） */
     public static String lastId(Context c) {
-        return sp(c).getString(C.K_LAST_ID, "");
+        return sp(c).getString("last_id_" + topic(c), "");
     }
 
     public static void setLastId(Context c, String v) {
-        sp(c).edit().putString(C.K_LAST_ID, v == null ? "" : v).apply();
+        sp(c).edit().putString("last_id_" + topic(c), v == null ? "" : v).apply();
+    }
+
+    /** 重置当前 topic 的游标：下次轮询会重新拉取最近 60 分钟的消息 */
+    public static void clearCursor(Context c) {
+        sp(c).edit().putString("last_id_" + topic(c), "").apply();
     }
 
     public static boolean running(Context c) {

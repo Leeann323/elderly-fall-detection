@@ -269,6 +269,14 @@ public class MainActivity extends Activity {
                                 .setTitle("诊断结果")
                                 .setMessage(report)
                                 .setPositiveButton("知道了", null)
+                                .setNegativeButton("重置游标", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface d, int w) {
+                                        P.clearCursor(MainActivity.this);
+                                        Toast.makeText(MainActivity.this,
+                                                "游标已重置，请点「启动监听」重新拉取", Toast.LENGTH_LONG).show();
+                                    }
+                                })
                                 .setNeutralButton("复制", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface d, int w) {
